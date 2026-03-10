@@ -25,7 +25,7 @@
             let name = withoutTOMLExtension themeFile;
             in lib.nameValuePair name
             (pkgs.runCommand name {} ''
-              cp ${./themes}/${themeFile} $out
+              cp "${./themes}/${themeFile}" $out
             '');
           themeDerivations = map mkThemePackage themeFiles;
         in { packages = lib.listToAttrs themeDerivations; };
