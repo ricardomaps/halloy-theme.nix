@@ -23,17 +23,10 @@
             lib.attrNames (builtins.readDir ./themes);
           mkThemePackage = themeFile:
             let name = withoutTOMLExtension themeFile;
-            in lib.nameValuePair name (pkgs.stdenvNoCC.mkDerivation {
-              inherit name;
-              dontUnpack = true;
-              dontConfigure = true;
-              dontBuild = true;
-              installPhase = ''
-                runHook preInstall
-                cp --reflink=auto ./themes/${themeFile} $out
-                runHook postInstall
-              '';
-            });
+            in lib.nameValuePair name
+            (pkgs.runCommand name {} ''
+              cp ${./themes}/${themeFile} $out
+            '');
           themeDerivations = map mkThemePackage themeFiles;
         in { packages = lib.listToAttrs themeDerivations; };
     };
